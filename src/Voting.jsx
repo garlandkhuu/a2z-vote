@@ -22,15 +22,16 @@ function Voting() {
   const [loading, setLoading] = useState(false);
   const [title, setTitle] = useState('');
   const [question, setQuestion] = useState('');
+  const [answers, setAnswers] = useState([]);
   const [answer1, setAnswer1] = useState('');
   const [answer2, setAnswer2] = useState('');
 
   //REALTIME GET FUNCTION
   useEffect(() => {
     const q = query(
-      colletionRef,
+      colletionRef
       //  where('owner', '==', currentUserId),
-    //   where('title', '==', 'School1') // does not need index
+      //   where('title', '==', 'School1') // does not need index
       //  where('score', '<=', 100) // needs index  https://firebase.google.com/docs/firestore/query-data/indexing?authuser=1&hl=en
       // orderBy('score', 'asc'), // be aware of limitations: https://firebase.google.com/docs/firestore/query-data/order-limit-data#limitations
       // limit(1)
@@ -58,11 +59,8 @@ function Voting() {
     const newQuestion = {
       title,
       question,
-      visible,
-      answer1,
-      total1: 0,
-      answer2,
-      total2: 0
+      visible: false,
+      answers,
     };
 
     try {
@@ -74,15 +72,13 @@ function Voting() {
   }
 
   // EDIT FUNCTION
-  async function editSchool(school) {
-    const updatedSchool = {
-      score: +score,
-      lastUpdate: serverTimestamp(),
-    };
+  async function editQuestion(question, index) {
+    const updateAnswers = { answers: question.answers };
+    ++updateAnswers.answers[index].total;
 
     try {
-      const schoolRef = doc(colletionRef, school.id);
-      updateDoc(schoolRef, updatedSchool);
+      const questionRef = doc(colletionRef, question.title);
+      updateDoc(questionRef, updateAnswers);
     } catch (error) {
       console.error(error);
     }
@@ -91,48 +87,65 @@ function Voting() {
   return (
     <Fragment>
       <h1>Voting/Questions POC</h1>
-      <div className="inputBox">
+      <div className='inputBox'>
         <h3>Add New</h3>
         <h6>Title</h6>
         <input
-          type="text"
+          type='text'
           value={title}
           onChange={(e) => setTitle(e.target.value)}
         />
         <h6>Add your question</h6>
         <input
-          type="text"
+          type='text'
           value={question}
           onChange={(e) => setQuestion(e.target.value)}
         />
-        <h6>answer1</h6>
+        <h6>Answer 1</h6>
         <input
-          type="text"
+          type='text'
           value={answer1}
           onChange={(e) => setAnswer1(e.target.value)}
         />
-        <h6>answer2</h6>
+        <h6>Answer 2</h6>
         <input
-          type="text"
+          type='text'
           value={answer2}
           onChange={(e) => setAnswer2(e.target.value)}
         />
         <h6>Add your answer</h6>
-        <button onClick={() => addQuestion()}>Submit</button>
+        <button
+          onClick={() => {
+            setAnswers([
+              { text: answer1, total: 0 },
+              { text: answer2, total: 0 },
+            ]);
+            addQuestion();
+          }}
+        >
+          Submit
+        </button>
       </div>
       <hr />
       {loading ? <h1>Loading...</h1> : null}
-      {questions.map((question) => (
-        question.visible ? (<div className="question" key={question.title}>
-          <h2>{question.title}</h2>
-          <p>{question.question}</p>
-          <p>{question.answer1}</p>
-          <p>{question.answer2}</p>
-          <div>
-            <button onClick={() => editQuestion(question)}>Edit Score</button>
+      {questions.map((question) =>
+        question.visible ? (
+          <div className='question' key={question.title}>
+            <h2>{question.title}</h2>
+            <p>{question.question}</p>
+            {question.answers.map((answer, index) => (
+              <div key={index}>
+                <button onClick={() => editQuestion(question, index)}>
+                  {answer.text}
+                </button>{' '}
+                <p>{answer.total}</p>
+              </div>
+            ))}
           </div>
-        </div>) : <></>
-      ))}
+        ) : (
+          <></>
+        )
+      )}
     </Fragment>
   );
 }
