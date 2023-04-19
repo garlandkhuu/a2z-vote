@@ -23,8 +23,7 @@ function Voting() {
   const [title, setTitle] = useState('');
   const [question, setQuestion] = useState('');
   const [answers, setAnswers] = useState([]);
-  const [answer1, setAnswer1] = useState('');
-  const [answer2, setAnswer2] = useState('');
+  const [answerCount, setAnswerCount] = useState(2);
 
   //REALTIME GET FUNCTION
   useEffect(() => {
@@ -72,7 +71,7 @@ function Voting() {
   }
 
   // EDIT FUNCTION
-  async function editQuestion(question, index) {
+  async function incrementTotal(question, index) {
     const updateAnswers = { answers: question.answers };
     ++updateAnswers.answers[index].total;
 
@@ -101,30 +100,46 @@ function Voting() {
           value={question}
           onChange={(e) => setQuestion(e.target.value)}
         />
-        <h6>Answer 1</h6>
-        <input
-          type='text'
-          value={answer1}
-          onChange={(e) => setAnswer1(e.target.value)}
-        />
-        <h6>Answer 2</h6>
-        <input
-          type='text'
-          value={answer2}
-          onChange={(e) => setAnswer2(e.target.value)}
-        />
-        <h6>Add your answer</h6>
+        {[...Array(answerCount)].map((x, i) => (
+          <>
+            <h6>Answer {i + 1}</h6>
+            <input
+              type='text'
+              value={answers[i]?.text ?? ''}
+              onChange={(e) => {
+                let newAnswers = [...answers];
+                if (newAnswers[i]) {
+                  newAnswers[i].text = e.target.value;
+                } else {
+                  newAnswers.push({ text: e.target.value, total: 0 });
+                }
+                setAnswers(newAnswers);
+              }}
+            />
+            {i + 1 > 2 ? (
+              <button
+                onClick={() => {
+                  let newAnswers = [...answers];
+                  newAnswers.splice(i, 1);
+                  setAnswers(newAnswers);
+                  setAnswerCount(answerCount - 1);
+                }}
+              >
+                X
+              </button>
+            ) : (
+              <></>
+            )}
+          </>
+        ))}
         <button
           onClick={() => {
-            setAnswers([
-              { text: answer1, total: 0 },
-              { text: answer2, total: 0 },
-            ]);
-            addQuestion();
+            setAnswerCount(answerCount + 1);
           }}
         >
-          Submit
+          Add another answer
         </button>
+        <button onClick={addQuestion}>Submit</button>
       </div>
       <hr />
       {loading ? <h1>Loading...</h1> : null}
@@ -135,7 +150,7 @@ function Voting() {
             <p>{question.question}</p>
             {question.answers.map((answer, index) => (
               <div key={index}>
-                <button onClick={() => editQuestion(question, index)}>
+                <button onClick={() => incrementTotal(question, index)}>
                   {answer.text}
                 </button>{' '}
                 <p>{answer.total}</p>
