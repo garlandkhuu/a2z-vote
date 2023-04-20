@@ -1,8 +1,13 @@
 import React from 'react';
+import { CollectionProvider } from './firebase/Collection';
 import Voting from './Voting';
 
 function App() {
-  return <Voting />;
+  return (
+    <CollectionProvider>
+      <Voting />
+    </CollectionProvider>
+  );
 }
 
 export default App;
