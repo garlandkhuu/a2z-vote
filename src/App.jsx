@@ -1,4 +1,3 @@
-import React from 'react';
 import { CollectionProvider } from './firebase/Collection';
 import Voting from './Voting';
 

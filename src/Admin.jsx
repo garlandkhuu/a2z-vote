@@ -14,7 +14,7 @@ import {
   orderBy,
   limit,
 } from 'firebase/firestore';
-import db from './firebase';
+import db from './firebase/firebase';
 
 function Admin() {
   const colletionRef = collection(db, 'questions');
