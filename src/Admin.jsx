@@ -17,7 +17,7 @@ import {
 import db from './firebase/firebase';
 
 function Admin() {
-  const colletionRef = collection(db, 'questions');
+  const collectionRef = collection(db, 'questions');
 
   const [questions, setQuestions] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -29,7 +29,7 @@ function Admin() {
   //REALTIME GET FUNCTION
   useEffect(() => {
     const q = query(
-      colletionRef
+      collectionRef
       //  where('owner', '==', currentUserId),
       //   where('title', '==', 'School1') // does not need index
       //  where('score', '<=', 100) // needs index  https://firebase.google.com/docs/firestore/query-data/indexing?authuser=1&hl=en
@@ -39,7 +39,7 @@ function Admin() {
 
     setLoading(true);
     // const unsub = onSnapshot(q, (querySnapshot) => {
-    const unsub = onSnapshot(colletionRef, (querySnapshot) => {
+    const unsub = onSnapshot(collectionRef, (querySnapshot) => {
       const items = [];
       querySnapshot.forEach((doc) => {
         items.push(doc.data());
@@ -64,7 +64,7 @@ function Admin() {
     };
 
     try {
-      const questionRef = doc(colletionRef, newQuestion.title);
+      const questionRef = doc(collectionRef, newQuestion.title);
       await setDoc(questionRef, newQuestion);
     } catch (error) {
       console.error(error);
@@ -77,7 +77,7 @@ function Admin() {
     ++updateAnswers.answers[index].total;
 
     try {
-      const questionRef = doc(colletionRef, question.title);
+      const questionRef = doc(collectionRef, question.title);
       updateDoc(questionRef, updateAnswers);
     } catch (error) {
       console.error(error);

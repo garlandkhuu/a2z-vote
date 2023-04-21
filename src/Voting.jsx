@@ -13,6 +13,7 @@ import {
   orderBy,
   limit,
 } from 'firebase/firestore';
+import { Typography } from '@mui/material';
 
 // import VoterView from './VoterView';
 // import ResultsView from './ResultsView';
@@ -26,7 +27,7 @@ function Voting() {
   const [custom, setCustom] = useState(false);
   const [customAnswer, setCustomAnswer] = useState('');
 
-  const { questions, colletionRef } = useContext(CollectionContext);
+  const { questions, collectionRef } = useContext(CollectionContext);
 
   // ADD FUNCTION
   async function addQuestion() {
@@ -39,7 +40,7 @@ function Voting() {
     };
 
     try {
-      const questionRef = doc(colletionRef, newQuestion.title);
+      const questionRef = doc(collectionRef, newQuestion.title);
       await setDoc(questionRef, newQuestion);
     } catch (error) {
       console.error(error);
@@ -52,7 +53,7 @@ function Voting() {
     ++updateAnswers.answers[index].total;
 
     try {
-      const questionRef = doc(colletionRef, question.title);
+      const questionRef = doc(collectionRef, question.title);
       updateDoc(questionRef, updateAnswers);
     } catch (error) {
       console.error(error);
@@ -64,7 +65,7 @@ function Voting() {
     updatedAnswers.answers.push({ text: customAnswer, total: 1 });
 
     try {
-      const questionRef = doc(colletionRef, question.title);
+      const questionRef = doc(collectionRef, question.title);
       updateDoc(questionRef, updatedAnswers);
     } catch (error) {
       console.error(error);
@@ -73,7 +74,7 @@ function Voting() {
 
   return (
     <Fragment>
-      <h1>Voting/Questions POC</h1>
+      <Typography variant="h1" my={2} fontSize={36} fontWeight="600">Voting/Questions POC</Typography>
       <div className='addQuestions'>
         <div className='inputBox'>
           <h2>Add a New Question</h2>

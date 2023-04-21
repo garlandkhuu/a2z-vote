@@ -21,15 +21,15 @@ export const CollectionProvider = ({ children }) => {
   const [questions, setQuestions] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  const colletionRef = collection(db, 'questions');
+  const collectionRef = collection(db, 'questions');
 
   //REALTIME GET FUNCTION
   useEffect(() => {
-    const q = query(colletionRef, where('visible', '==', true), limit(1));
+    const q = query(collectionRef, where('visible', '==', true), limit(1));
 
     setLoading(true);
     const unsub = onSnapshot(q, (querySnapshot) => {
-      // const unsub = onSnapshot(colletionRef, (querySnapshot) => {
+      // const unsub = onSnapshot(collectionRef, (querySnapshot) => {
       const items = [];
       querySnapshot.forEach((doc) => {
         items.push(doc.data());
@@ -63,7 +63,7 @@ export const CollectionProvider = ({ children }) => {
     <CollectionContext.Provider
       value={{
         questions,
-        colletionRef,
+        collectionRef,
       }}
     >
       {children}
