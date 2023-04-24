@@ -1,5 +1,4 @@
 
-import { useMemo } from "react";
 import { Box, Typography } from "@mui/material";
 import { Bar } from "react-chartjs-2";
 import ChartDataLabels from 'chartjs-plugin-datalabels';
@@ -16,16 +15,11 @@ function ResultChart(question) {
             }
         },
         plugins: {
-            title: {
-                display: true,
-                text: questionText
-            },
             legend: {
                 display: false
             }
         }
     }
-    console.log(question);
 
     const labels = answers.map((data) => data.text);
     const values = answers.map((data) => data.total);
@@ -44,8 +38,11 @@ function ResultChart(question) {
   }
 
   return (
-    <Box p={5}>
-        <Bar data={data} options={options} plugins={[ChartDataLabels]} width={300} height={600} />
+    <Box p={2}>
+        <Typography variant="h2" fontSize={18} fontWeight={400} mb={5} px={2}>{questionText}</Typography>
+        <Box>
+            <Bar data={data} options={options} plugins={[ChartDataLabels]} width={300} height={500} />
+        </Box>
     </Box>
   );
 }
