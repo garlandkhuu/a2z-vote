@@ -2,12 +2,13 @@ import { useContext } from "react";
 import { Typography } from "@mui/material";
 
 import { CollectionContext } from './firebase/Collection';
+import ResultChart from "./components/ResultChart";
 
 function Result() {
     const { questions } = useContext(CollectionContext);
-    console.log(questions);
+    const activeQuestion = questions.find((question) => question.visible);
 
-    return <Typography variant="h1" my={2} fontSize={36} fontWeight="600">Current Result</Typography>;
+    return activeQuestion ? <ResultChart question={activeQuestion} /> : <Typography variant="p">Loading...</Typography>;
 }
 
 export default Result;
