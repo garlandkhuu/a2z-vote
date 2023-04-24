@@ -1,4 +1,4 @@
-import { useState, useEffect, Fragment, useContext } from 'react';
+import { useState, useEffect, useMemo, Fragment, useContext } from 'react';
 import {
   doc,
   onSnapshot,
@@ -24,10 +24,37 @@ function Voting() {
 
   const { questions, collectionRef } = useContext(CollectionContext);
 
+  const answeredCookie = useMemo(
+    () =>
+      JSON.parse(localStorage.getItem('answers'))[questions[0]?.title] ?? {},
+    [questions, selectedAnswers]
+  );
+
+  let newSelection = { ...selectedAnswers };
+
+  useEffect(() => {
+    const currentCookie = JSON.parse(localStorage.getItem('answers')) ?? {};
+    currentCookie[questions[0].title] = { ...selectedAnswers };
+
+    localStorage.setItem('answers', JSON.stringify(currentCookie));
+  }, [selectedAnswers]);
+
   // EDIT FUNCTION
   async function incrementTotal(question, index) {
     const updateAnswers = { answers: question.answers };
     ++updateAnswers.answers[index].total;
+
+    try {
+      const questionRef = doc(collectionRef, question.title);
+      updateDoc(questionRef, updateAnswers);
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  async function decrementTotal(question, index) {
+    const updateAnswers = { answers: question.answers };
+    --updateAnswers.answers[index].total;
 
     try {
       const questionRef = doc(collectionRef, question.title);
@@ -72,92 +99,119 @@ function Voting() {
   }
 
   const handleSubmit = (question) => {
-    const totalSelected = Object.keys(selectedAnswers).length;
+    setSelectedAnswers(newSelection);
+    const totalSelected = Object.keys(newSelection).length;
     if (totalSelected == 0) return;
 
-    Object.keys(selectedAnswers).forEach((i) => {
+    Object.keys(newSelection).forEach((i) => {
       incrementTotal(question, i);
     });
   };
 
+  const handleChangeAnswer = () => {
+    Object.keys(answeredCookie).forEach((i) => {
+      decrementTotal(questions[0], i);
+    });
+    setSelectedAnswers({});
+  };
+
   return (
     <Fragment>
-      <div className='viewQuestions'>
-        <h2>Voting View</h2>
-        {questions.length == 0 ? <h1>Wait for the next question!</h1> : null}
-        {questions.map((question) =>
-          question.visible ? (
-            <div className='question' key={question.title}>
-              <h2>Title: {question.title}</h2>
-              <p>Question: {question.question}</p>
-              {question.multipleSelection
-                ? question.answers.map((answer, index) => (
-                    <div key={index}>
+      {Object.keys(answeredCookie).length > 0 ? (
+        <>
+          <button onClick={handleChangeAnswer}>Change your answer</button>
+        </>
+      ) : (
+        <Fragment>
+          <div className='viewQuestions'>
+            <h2>Voting View</h2>
+            {questions.length == 0 ? (
+              <h1>Wait for the next question!</h1>
+            ) : null}
+            {questions.map((question) =>
+              question.visible ? (
+                <div className='question' key={question.title}>
+                  <h2>Title: {question.title}</h2>
+                  <p>Question: {question.question}</p>
+                  {question.multipleSelection
+                    ? question.answers.map((answer, index) => (
+                        <div key={index}>
+                          <input
+                            type='checkbox'
+                            name={answer.text}
+                            value={index}
+                            onClick={(e) => {
+                              if (e.target.checked) {
+                                newSelection[index] = e.target.checked;
+                              } else {
+                                delete newSelection[index];
+                              }
+                            }}
+                          />
+                          <label>{answer.text}</label>
+                        </div>
+                      ))
+                    : question.answers.map((answer, index) => (
+                        <div key={index}>
+                          <button
+                            onClick={() => {
+                              const newSelection = {};
+                              newSelection[index] = true;
+                              setSelectedAnswers(newSelection);
+                              incrementTotal(question, index);
+                            }}
+                          >
+                            {answer.text}
+                          </button>
+                        </div>
+                      ))}
+                  {question.custom ? (
+                    <Box>
                       <input
-                        type='checkbox'
-                        name={answer.text}
-                        value={index}
-                        onClick={(e) => {
-                          const newSelection = { ...selectedAnswers };
-                          if (e.target.checked) {
-                            newSelection[index] = e.target.checked;
-                          } else {
-                            delete newSelection[index];
-                          }
-                          setSelectedAnswers(newSelection);
+                        type='text'
+                        value={customAnswer}
+                        onChange={(e) => {
+                          setCustomAnswerError('');
+                          setCustomAnswer(e.target.value);
                         }}
                       />
-                      <label>{answer.text}</label>
-                    </div>
-                  ))
-                : question.answers.map((answer, index) => (
-                    <div key={index}>
-                      <button onClick={() => incrementTotal(question, index)}>
-                        {answer.text}
+                      <button
+                        onClick={() => {
+                          addAnswer(question);
+                        }}
+                      >
+                        Add New Answer
                       </button>
-                    </div>
-                  ))}
-              {question.custom ? (
-                <Box>
-                  <input
-                    type='text'
-                    value={customAnswer}
-                    onChange={(e) => {
-                      setCustomAnswerError('');
-                      setCustomAnswer(e.target.value);
-                    }}
-                  />
-                  <button
-                    onClick={() => {
-                      addAnswer(question);
-                    }}
-                  >
-                    Add New Answer
-                  </button>
-                  {customAnswerError ? (
-                    <Typography variant='body1' color='red' my={2}>
-                      {customAnswerError}
-                    </Typography>
+                      {customAnswerError ? (
+                        <Typography variant='body1' color='red' my={2}>
+                          {customAnswerError}
+                        </Typography>
+                      ) : (
+                        <></>
+                      )}
+                    </Box>
                   ) : (
                     <></>
                   )}
-                </Box>
+                  {question.multipleSelection ? (
+                    <button
+                      onClick={() => {
+                        handleSubmit(question);
+                      }}
+                    >
+                      Submit
+                    </button>
+                  ) : (
+                    <></>
+                  )}
+                </div>
               ) : (
                 <></>
-              )}
-              <button
-                onClick={() => {
-                  handleSubmit(question);
-                }}
-              >
-                Submit
-              </button>
-            </div>
-          ) : (
-            <></>
-          )
-        )}
-      </div>
+              )
+            )}
+          </div>
+        </Fragment>
+      )}
     </Fragment>
   );
 }
