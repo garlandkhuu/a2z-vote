@@ -21,6 +21,7 @@ import { CollectionContext } from './firebase/Collection';
 
 function Voting() {
   const [customAnswer, setCustomAnswer] = useState('');
+  const [customAnswerError, setCustomAnswerError] = useState('');
 
   const { questions, collectionRef } = useContext(CollectionContext);
 
@@ -38,12 +39,29 @@ function Voting() {
   }
 
   async function addAnswer(question) {
+    if (!customAnswer) {
+      setCustomAnswerError('Enter a new custom answer.');
+      return;
+    }
+
+    const existingAnswers = question.answers
+      .map((answer) => answer.text)
+      .filter((answer) => answer.toLowerCase() == customAnswer.toLowerCase());
+
+    if (existingAnswers.length > 0) {
+      setCustomAnswerError('Answer has already been added!');
+      return;
+    } else {
+      setCustomAnswerError('');
+    }
+
     const updatedAnswers = { answers: question.answers };
     updatedAnswers.answers.push({ text: customAnswer, total: 1 });
 
     try {
       const questionRef = doc(collectionRef, question.title);
       updateDoc(questionRef, updatedAnswers);
+      setCustomAnswer('');
     } catch (error) {
       console.error(error);
     }
@@ -80,6 +98,13 @@ function Voting() {
                   >
                     Submit
                   </button>
+                  {customAnswerError ? (
+                    <Typography variant='body1' color='red' my={2}>
+                      {customAnswerError}
+                    </Typography>
+                  ) : (
+                    <></>
+                  )}
                 </Fragment>
               ) : (
                 <></>
