@@ -11,6 +11,8 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import EditIcon from '@mui/icons-material/Edit';
 import EditOffIcon from '@mui/icons-material/EditOff';
+import DoneIcon from '@mui/icons-material/Done';
+import DoneAllIcon from '@mui/icons-material/DoneAll';
 
 import { doc, updateDoc, setDoc } from 'firebase/firestore';
 
@@ -22,6 +24,7 @@ function Admin() {
   const [answers, setAnswers] = useState([]);
   const [answerCount, setAnswerCount] = useState(2);
   const [custom, setCustom] = useState(false);
+  const [multipleSelection, setMultipleSelection] = useState(false);
 
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -39,6 +42,7 @@ function Admin() {
       visible: false,
       answers,
       custom,
+      multipleSelection,
     };
 
     try {
@@ -113,20 +117,29 @@ function Admin() {
                     <Box p={2}>
                       <Typography variant='h5'>{question.title}</Typography>
                       <Typography>Question: {question.question}</Typography>
-                      <Typography>
-                        {question.visible ? (
-                          <VisibilityIcon color='primary' />
-                        ) : (
-                          <VisibilityOffIcon />
-                        )}
-                      </Typography>
-                      <Typography>
-                        {question.custom ? (
-                          <EditIcon color='primary' />
-                        ) : (
-                          <EditOffIcon />
-                        )}
-                      </Typography>
+                      <Box display='flex'>
+                        <Typography>
+                          {question.visible ? (
+                            <VisibilityIcon color='primary' />
+                          ) : (
+                            <VisibilityOffIcon />
+                          )}
+                        </Typography>
+                        <Typography>
+                          {question.custom ? (
+                            <EditIcon color='primary' />
+                          ) : (
+                            <EditOffIcon />
+                          )}
+                        </Typography>
+                        <Typography>
+                          {question.multipleSelection ? (
+                            <DoneAllIcon color='primary' />
+                          ) : (
+                            <DoneIcon />
+                          )}
+                        </Typography>
+                      </Box>
                       <Typography>Answers:</Typography>
                       {question.answers.map((answer, index) => (
                         <Typography key={index}>
@@ -162,6 +175,14 @@ function Admin() {
               type='checkbox'
               onClick={(e) => {
                 setCustom(e.target.checked);
+              }}
+            />
+            <br />
+            <span>Allow multiple selection</span>
+            <input
+              type='checkbox'
+              onClick={(e) => {
+                setMultipleSelection(e.target.checked);
               }}
             />
             {[...Array(answerCount)].map((x, i) => (

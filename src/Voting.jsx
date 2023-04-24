@@ -13,15 +13,14 @@ import {
   orderBy,
   limit,
 } from 'firebase/firestore';
-import { Typography } from '@mui/material';
+import { Typography, Box } from '@mui/material';
 
-// import VoterView from './VoterView';
-// import ResultsView from './ResultsView';
 import { CollectionContext } from './firebase/Collection';
 
 function Voting() {
   const [customAnswer, setCustomAnswer] = useState('');
   const [customAnswerError, setCustomAnswerError] = useState('');
+  const [selectedAnswers, setSelectedAnswers] = useState({});
 
   const { questions, collectionRef } = useContext(CollectionContext);
 
@@ -58,7 +57,10 @@ function Voting() {
     }
 
     const updatedAnswers = { answers: question.answers };
-    updatedAnswers.answers.push({ text: customAnswer, total: 1 });
+    updatedAnswers.answers.push({
+      text: customAnswer,
+      total: question.multipleSelection ? 0 : 1,
+    });
 
     try {
       const questionRef = doc(collectionRef, question.title);
@@ -68,6 +70,15 @@ function Voting() {
       console.error(error);
     }
   }
+
+  const handleSubmit = (question) => {
+    const totalSelected = Object.keys(selectedAnswers).length;
+    if (totalSelected == 0) return;
+
+    Object.keys(selectedAnswers).forEach((i) => {
+      incrementTotal(question, i);
+    });
+  };
 
   return (
     <Fragment>
@@ -79,15 +90,35 @@ function Voting() {
             <div className='question' key={question.title}>
               <h2>Title: {question.title}</h2>
               <p>Question: {question.question}</p>
-              {question.answers.map((answer, index) => (
-                <div key={index}>
-                  <button onClick={() => incrementTotal(question, index)}>
-                    {answer.text}
-                  </button>
-                </div>
-              ))}
+              {question.multipleSelection
+                ? question.answers.map((answer, index) => (
+                    <div key={index}>
+                      <input
+                        type='checkbox'
+                        name={answer.text}
+                        value={index}
+                        onClick={(e) => {
+                          const newSelection = { ...selectedAnswers };
+                          if (e.target.checked) {
+                            newSelection[index] = e.target.checked;
+                          } else {
+                            delete newSelection[index];
+                          }
+                          setSelectedAnswers(newSelection);
+                        }}
+                      />
+                      <label>{answer.text}</label>
+                    </div>
+                  ))
+                : question.answers.map((answer, index) => (
+                    <div key={index}>
+                      <button onClick={() => incrementTotal(question, index)}>
+                        {answer.text}
+                      </button>
+                    </div>
+                  ))}
               {question.custom ? (
-                <Fragment>
+                <Box>
                   <input
                     type='text'
                     value={customAnswer}
@@ -101,7 +132,7 @@ function Voting() {
                       addAnswer(question);
                     }}
                   >
-                    Submit
+                    Add New Answer
                   </button>
                   {customAnswerError ? (
                     <Typography variant='body1' color='red' my={2}>
@@ -110,10 +141,17 @@ function Voting() {
                   ) : (
                     <></>
                   )}
-                </Fragment>
+                </Box>
               ) : (
                 <></>
               )}
+              <button
+                onClick={() => {
+                  handleSubmit(question);
+                }}
+              >
+                Submit
+              </button>
             </div>
           ) : (
             <></>
