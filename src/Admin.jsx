@@ -9,6 +9,8 @@ import {
 } from '@mui/material';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
+import EditIcon from '@mui/icons-material/Edit';
+import EditOffIcon from '@mui/icons-material/EditOff';
 
 import { doc, updateDoc, setDoc } from 'firebase/firestore';
 
@@ -23,7 +25,7 @@ function Admin() {
 
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [login, setLogin] = useState(false);
+  const [login, setLogin] = useState(localStorage.getItem('admin'));
   const [loginError, setLoginError] = useState(false);
 
   const { allQuestions, questions, collectionRef } =
@@ -116,6 +118,13 @@ function Admin() {
                           <VisibilityIcon color='primary' />
                         ) : (
                           <VisibilityOffIcon />
+                        )}
+                      </Typography>
+                      <Typography>
+                        {question.custom ? (
+                          <EditIcon color='primary' />
+                        ) : (
+                          <EditOffIcon />
                         )}
                       </Typography>
                       <Typography>Answers:</Typography>
@@ -226,6 +235,7 @@ function Admin() {
             onClick={() => {
               // Shhh don't look over here
               if (username === 'admin' && password === 'townhalladmin') {
+                localStorage.setItem('admin', true);
                 setLogin(true);
               } else {
                 setLoginError(true);
