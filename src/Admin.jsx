@@ -1,22 +1,9 @@
-import { useState, useEffect, Fragment, useContext } from 'react';
+import { useState, Fragment, useContext } from 'react';
 import { Typography, Box, TextField, Paper, Autocomplete } from '@mui/material';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 
-import {
-  doc,
-  onSnapshot,
-  updateDoc,
-  setDoc,
-  deleteDoc,
-  collection,
-  serverTimestamp,
-  getDocs,
-  query,
-  where,
-  orderBy,
-  limit,
-} from 'firebase/firestore';
+import { doc, updateDoc, setDoc } from 'firebase/firestore';
 
 import { CollectionContext } from './firebase/Collection';
 
@@ -26,7 +13,7 @@ function Admin() {
   const [answers, setAnswers] = useState([]);
   const [answerCount, setAnswerCount] = useState(2);
   const [custom, setCustom] = useState(false);
-  const [customAnswer, setCustomAnswer] = useState('');
+
   const { allQuestions, questions, collectionRef } =
     useContext(CollectionContext);
 
@@ -79,7 +66,7 @@ function Admin() {
           <Autocomplete
             disableClearable
             value={questions[0]?.title ?? 'empty'}
-            onChange={(event, newValue) => {
+            onChange={(e, newValue) => {
               makeVisible(newValue);
             }}
             options={allQuestions.map((question) => question.title)}

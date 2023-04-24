@@ -1,16 +1,9 @@
 import { useEffect, useState } from 'react';
 import {
-  doc,
   onSnapshot,
-  updateDoc,
-  setDoc,
-  deleteDoc,
   collection,
-  serverTimestamp,
-  getDocs,
   query,
   where,
-  orderBy,
   limit,
 } from 'firebase/firestore';
 import db from './firebase';
@@ -30,7 +23,6 @@ export const CollectionProvider = ({ children }) => {
 
     setLoading(true);
     const unsubVisibleQuestion = onSnapshot(q, (querySnapshot) => {
-      // const unsub = onSnapshot(collectionRef, (querySnapshot) => {
       const items = [];
       querySnapshot.forEach((doc) => {
         items.push(doc.data());
