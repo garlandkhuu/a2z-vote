@@ -34,7 +34,6 @@ function Voting() {
 
   useEffect(() => {
     const currentCookie = JSON.parse(localStorage.getItem('answers')) ?? {};
-    console.log('selectedAnswers', selectedAnswers);
     currentCookie[questions[0].title] = { ...selectedAnswers };
 
     localStorage.setItem('answers', JSON.stringify(currentCookie));
