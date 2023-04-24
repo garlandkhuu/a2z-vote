@@ -39,14 +39,16 @@ function Voting() {
   }
 
   async function addAnswer(question) {
-    if (!customAnswer) {
+    if (!customAnswer.trim()) {
       setCustomAnswerError('Enter a new custom answer.');
       return;
     }
 
     const existingAnswers = question.answers
       .map((answer) => answer.text)
-      .filter((answer) => answer.toLowerCase() == customAnswer.toLowerCase());
+      .filter(
+        (answer) => answer.toLowerCase() == customAnswer.toLowerCase().trim()
+      );
 
     if (existingAnswers.length > 0) {
       setCustomAnswerError('Answer has already been added!');
@@ -89,7 +91,10 @@ function Voting() {
                   <input
                     type='text'
                     value={customAnswer}
-                    onChange={(e) => setCustomAnswer(e.target.value)}
+                    onChange={(e) => {
+                      setCustomAnswerError('');
+                      setCustomAnswer(e.target.value);
+                    }}
                   />
                   <button
                     onClick={() => {
