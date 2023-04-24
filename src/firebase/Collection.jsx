@@ -19,6 +19,7 @@ export const CollectionContext = React.createContext();
 
 export const CollectionProvider = ({ children }) => {
   const [questions, setQuestions] = useState([]);
+  const [allQuestions, setAllQuestions] = useState([]);
   const [loading, setLoading] = useState(true);
 
   const collectionRef = collection(db, 'questions');
@@ -28,7 +29,7 @@ export const CollectionProvider = ({ children }) => {
     const q = query(collectionRef, where('visible', '==', true), limit(1));
 
     setLoading(true);
-    const unsub = onSnapshot(q, (querySnapshot) => {
+    const unsubVisibleQuestion = onSnapshot(q, (querySnapshot) => {
       // const unsub = onSnapshot(collectionRef, (querySnapshot) => {
       const items = [];
       querySnapshot.forEach((doc) => {
@@ -37,8 +38,17 @@ export const CollectionProvider = ({ children }) => {
       setQuestions(items);
       setLoading(false);
     });
+    const unsubAllQuestions = onSnapshot(collectionRef, (querySnapshot) => {
+      const items = [];
+      querySnapshot.forEach((doc) => {
+        items.push(doc.data());
+      });
+      setAllQuestions(items);
+      setLoading(false);
+    });
     return () => {
-      unsub();
+      unsubVisibleQuestion();
+      unsubAllQuestions();
     };
 
     // eslint-disable-next-line
@@ -62,6 +72,7 @@ export const CollectionProvider = ({ children }) => {
   return (
     <CollectionContext.Provider
       value={{
+        allQuestions,
         questions,
         collectionRef,
       }}

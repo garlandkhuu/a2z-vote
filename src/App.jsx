@@ -11,9 +11,9 @@ function App() {
     <CollectionProvider>
       <Box p={5}>
         <Routes>
-          <Route path="/" element={<Voting />} />
-          <Route path="admin" element={<Admin />} />
-          <Route path="result" element={<Result />} />
+          <Route path='/' element={<Voting />} />
+          <Route path='admin' element={<Admin />} />
+          <Route path='result' element={<Result />} />
         </Routes>
       </Box>
     </CollectionProvider>
