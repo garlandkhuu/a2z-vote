@@ -25,7 +25,6 @@ import {
 function Voting() {
   const [customAnswer, setCustomAnswer] = useState('');
   const [customAnswerError, setCustomAnswerError] = useState('');
-  const [selectedAnswers, setSelectedAnswers] = useState({});
 
   const { questions, collectionRef } = useContext(CollectionContext);
   const {
@@ -33,6 +32,10 @@ function Voting() {
     hasSubmittedCurrent,
     answersCurrent,
   } = useContext(AppStateContext);
+
+  const [selectedAnswers, setSelectedAnswers] = useState(
+    answersCurrent?.answers || {}
+  );
   const [disabled, setDisabled] = useState(false);
 
   useEffect(() => {
@@ -47,6 +50,18 @@ function Voting() {
   async function incrementTotal(question, index) {
     const updateAnswers = { answers: question.answers };
     ++updateAnswers.answers[index].total;
+
+    try {
+      const questionRef = doc(collectionRef, question.title);
+      updateDoc(questionRef, updateAnswers);
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  async function decrementTotal(question, index) {
+    const updateAnswers = { answers: question.answers };
+    --updateAnswers.answers[index].total;
 
     try {
       const questionRef = doc(collectionRef, question.title);
@@ -94,12 +109,13 @@ function Voting() {
     const totalSelected = Object.keys(selectedAnswers).length;
     if (totalSelected == 0) return;
 
+    Object.keys(selectedAnswers).forEach((i) => {
+      incrementTotal(question, i);
+    });
+
     dispatchAppState({
       type: ADD_ANSWER,
       payload: { title: question.title, answers: selectedAnswers },
-    });
-    Object.keys(selectedAnswers).forEach((i) => {
-      incrementTotal(question, i);
     });
   };
 
@@ -108,8 +124,25 @@ function Voting() {
       TODO: 
       Decrement count of old answer from firebase store
       Increment count of new answers in firebase store
-      Dispatch change new answer to app state
+      Dispatch change answer to app state
     */
+    const totalSelected = Object.keys(selectedAnswers).length;
+    if (totalSelected == 0) return;
+
+    Object.keys(answersCurrent.answers).forEach((i) => {
+      decrementTotal(question, i);
+    });
+
+    Object.keys(selectedAnswers).forEach((i) => {
+      incrementTotal(question, i);
+    });
+
+    dispatchAppState({
+      type: CHANGE_ANSWER,
+      payload: { title: question.title, answers: selectedAnswers },
+    });
+
+    setDisabled(true);
   };
 
   return (
@@ -130,8 +163,8 @@ function Voting() {
                         name={answer.text}
                         value={index}
                         disabled={disabled}
-                        defaultChecked={(
-                          Object.keys(answersCurrent.answers) || []
+                        defaultChecked={Object.keys(
+                          answersCurrent?.answers || {}
                         ).includes(String(index))}
                         onClick={(e) => {
                           const newSelection = { ...selectedAnswers };

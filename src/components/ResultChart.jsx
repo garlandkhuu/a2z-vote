@@ -56,7 +56,7 @@ function ResultChart({
           '#8c3eb0',
         ],
         datalabels: {
-          align: 'end',
+          align: 'start',
           anchor: 'end',
           font: {
             size: 16,

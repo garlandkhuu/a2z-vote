@@ -16,6 +16,7 @@ export const AppStateContext = createContext(null);
 const reducer = (state, action) => {
   switch (action.type) {
     case ADD_ANSWER: {
+      // Don't add question if already stored
       if (
         state.submitted.some(
           (question) => question.title === action.payload.title
@@ -31,6 +32,7 @@ const reducer = (state, action) => {
       const newSubmitted = state.submitted.filter(
         (question) => question.title !== action.payload.title
       );
+      newSubmitted.push(action.payload);
       state.submitted = newSubmitted;
       localStorage.setItem(APP_STATE_KEY, JSON.stringify(state));
       return state;
