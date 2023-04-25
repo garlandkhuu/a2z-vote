@@ -120,12 +120,6 @@ function Voting() {
   };
 
   const handleResubmit = (question) => {
-    /*
-      TODO: 
-      Decrement count of old answer from firebase store
-      Increment count of new answers in firebase store
-      Dispatch change answer to app state
-    */
     const totalSelected = Object.keys(selectedAnswers).length;
     if (totalSelected == 0) return;
 

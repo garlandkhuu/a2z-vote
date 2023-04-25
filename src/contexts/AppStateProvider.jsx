@@ -64,7 +64,7 @@ export const AppStateProvider = ({ children }) => {
     } else {
       setHasSubmittedCurrent(false);
     }
-  }, [appState.submitted.length, activeQuestion.title]);
+  }, [appState, activeQuestion]);
 
   const value = { appState, dispatch, hasSubmittedCurrent, answersCurrent };
 
