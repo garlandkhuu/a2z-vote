@@ -253,6 +253,7 @@ function Admin() {
             onChange={(e) => setPassword(e.target.value)}
           />
           <Button
+            className="login-btn"
             onClick={() => {
               // Shhh don't look over here
               if (username === 'admin' && password === 'townhalladmin') {

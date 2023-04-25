@@ -69,7 +69,13 @@ button:focus-visible {
 }
 
 @media (prefers-color-scheme: dark) {
-  .MuiAutocomplete-root .MuiAutocomplete-input {
+  .MuiAutocomplete-root .MuiAutocomplete-input, .MuiFormControl-root label, .MuiFormControl-root input, .MuiFormControl-root fieldset {
     color: #fff;
+    border-color:#fff;
+  }
+
+  .MuiButton-root.MuiButton-text.login-btn {
+    background-color: rgba(255, 255, 255, 0.3);
+    color:#000
   }
 }
