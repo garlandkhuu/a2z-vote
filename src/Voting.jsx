@@ -24,11 +24,14 @@ function Voting() {
 
   const { questions, collectionRef } = useContext(CollectionContext);
 
-  const answeredCookie = useMemo(
-    () =>
-      JSON.parse(localStorage.getItem('answers'))[questions[0]?.title] ?? {},
-    [questions, selectedAnswers]
-  );
+  const answeredCookie = useMemo(() => {
+    if (localStorage.getItem('answers')) {
+      return (
+        JSON.parse(localStorage.getItem('answers'))[questions[0]?.title] ?? {}
+      );
+    }
+    return {};
+  }, [questions, selectedAnswers]);
 
   let newSelection = { ...selectedAnswers };
 
