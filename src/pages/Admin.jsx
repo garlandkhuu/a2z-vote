@@ -16,7 +16,7 @@ import DoneAllIcon from '@mui/icons-material/DoneAll';
 
 import { doc, updateDoc, setDoc } from 'firebase/firestore';
 
-import { CollectionContext } from './firebase/Collection';
+import { CollectionContext } from '../firebase/Collection';
 
 function Admin() {
   const [title, setTitle] = useState('');

@@ -48,15 +48,8 @@ export const CollectionProvider = ({ children }) => {
 
   if (loading) {
     return (
-      <div
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          height: '80vh',
-        }}
-      >
-        <h1>Initializing...</h1>
+      <div>
+        <h2>Initializing...</h2>
       </div>
     );
   }

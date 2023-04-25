@@ -1,9 +1,9 @@
 import { useContext } from 'react';
 import { Typography } from '@mui/material';
 
-import { CollectionContext } from './firebase/Collection';
-import ResultChart from './components/ResultChart';
-import useIsMobile from './hooks/useIsMobile';
+import { CollectionContext } from '../firebase/Collection';
+import ResultChart from '../components/ResultChart';
+import useIsMobile from '../hooks/useIsMobile';
 
 function Result() {
   const { questions } = useContext(CollectionContext);

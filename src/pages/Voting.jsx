@@ -15,7 +15,7 @@ import {
 } from 'firebase/firestore';
 import { Typography, Box } from '@mui/material';
 
-import { CollectionContext } from './firebase/Collection';
+import { CollectionContext } from '../firebase/Collection';
 
 function Voting() {
   const [customAnswer, setCustomAnswer] = useState('');
@@ -83,13 +83,13 @@ function Voting() {
   return (
     <Fragment>
       <div className='viewQuestions'>
-        <h2>Voting View</h2>
         {questions.length == 0 ? <h1>Wait for the next question!</h1> : null}
         {questions.map((question) =>
           question.visible ? (
             <div className='question' key={question.title}>
-              <h2>Title: {question.title}</h2>
-              <p>Question: {question.question}</p>
+              <Typography variant='h2' fontSize={20} fontWeight={600} mb={3}>
+                {question.question}
+              </Typography>
               {question.multipleSelection
                 ? question.answers.map((answer, index) => (
                     <div key={index}>

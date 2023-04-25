@@ -2,22 +2,23 @@ import { Routes, Route } from 'react-router-dom';
 import { Box } from '@mui/material';
 
 import { CollectionProvider } from './firebase/Collection';
-import Voting from './Voting';
-import Admin from './Admin';
-import Result from './Result';
+import Voting from './pages/Voting';
+import Admin from './pages/Admin';
+import Result from './pages/Result';
 import useIsMobile from './hooks/useIsMobile';
 
 function App() {
+  const isMobile = useIsMobile();
   return (
-    <CollectionProvider>
-      <Box p={useIsMobile ? 2 : 5}>
+    <Box p={isMobile ? 2 : 5}>
+      <CollectionProvider>
         <Routes>
           <Route path='/' element={<Voting />} />
           <Route path='admin' element={<Admin />} />
           <Route path='result' element={<Result />} />
         </Routes>
-      </Box>
-    </CollectionProvider>
+      </CollectionProvider>
+    </Box>
   );
 }
 
