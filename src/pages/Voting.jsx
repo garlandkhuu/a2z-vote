@@ -16,6 +16,11 @@ import {
 import { Typography, Box } from '@mui/material';
 
 import { CollectionContext } from '../firebase/Collection';
+import {
+  AppStateContext,
+  ADD_ANSWER,
+  CHANGE_ANSWER,
+} from '../contexts/AppStateProvider';
 
 function Voting() {
   const [customAnswer, setCustomAnswer] = useState('');
@@ -23,6 +28,20 @@ function Voting() {
   const [selectedAnswers, setSelectedAnswers] = useState({});
 
   const { questions, collectionRef } = useContext(CollectionContext);
+  const {
+    dispatch: dispatchAppState,
+    hasSubmittedCurrent,
+    answersCurrent,
+  } = useContext(AppStateContext);
+  const [disabled, setDisabled] = useState(false);
+
+  useEffect(() => {
+    if (hasSubmittedCurrent) {
+      setDisabled(true);
+    } else {
+      setDisabled(false);
+    }
+  }, [hasSubmittedCurrent]);
 
   // EDIT FUNCTION
   async function incrementTotal(question, index) {
@@ -75,9 +94,22 @@ function Voting() {
     const totalSelected = Object.keys(selectedAnswers).length;
     if (totalSelected == 0) return;
 
+    dispatchAppState({
+      type: ADD_ANSWER,
+      payload: { title: question.title, answers: selectedAnswers },
+    });
     Object.keys(selectedAnswers).forEach((i) => {
       incrementTotal(question, i);
     });
+  };
+
+  const handleResubmit = (question) => {
+    /*
+      TODO: 
+      Decrement count of old answer from firebase store
+      Increment count of new answers in firebase store
+      Dispatch change new answer to app state
+    */
   };
 
   return (
@@ -97,6 +129,10 @@ function Voting() {
                         type='checkbox'
                         name={answer.text}
                         value={index}
+                        disabled={disabled}
+                        defaultChecked={(
+                          Object.keys(answersCurrent.answers) || []
+                        ).includes(String(index))}
                         onClick={(e) => {
                           const newSelection = { ...selectedAnswers };
                           if (e.target.checked) {
@@ -112,7 +148,10 @@ function Voting() {
                   ))
                 : question.answers.map((answer, index) => (
                     <div key={index}>
-                      <button onClick={() => incrementTotal(question, index)}>
+                      <button
+                        disabled={disabled}
+                        onClick={() => incrementTotal(question, index)}
+                      >
                         {answer.text}
                       </button>
                     </div>
@@ -122,12 +161,14 @@ function Voting() {
                   <input
                     type='text'
                     value={customAnswer}
+                    disabled={disabled}
                     onChange={(e) => {
                       setCustomAnswerError('');
                       setCustomAnswer(e.target.value);
                     }}
                   />
                   <button
+                    disabled={disabled}
                     onClick={() => {
                       addAnswer(question);
                     }}
@@ -145,13 +186,25 @@ function Voting() {
               ) : (
                 <></>
               )}
-              <button
-                onClick={() => {
-                  handleSubmit(question);
-                }}
-              >
-                Submit
-              </button>
+              {hasSubmittedCurrent ? (
+                disabled ? (
+                  <button onClick={() => setDisabled(false)}>
+                    Edit Answer
+                  </button>
+                ) : (
+                  <button onClick={() => handleResubmit(question)}>
+                    Resubmit
+                  </button>
+                )
+              ) : (
+                <button
+                  onClick={() => {
+                    handleSubmit(question);
+                  }}
+                >
+                  Submit
+                </button>
+              )}
             </div>
           ) : (
             <></>

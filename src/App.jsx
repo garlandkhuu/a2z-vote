@@ -2,6 +2,7 @@ import { Routes, Route } from 'react-router-dom';
 import { Box } from '@mui/material';
 
 import { CollectionProvider } from './firebase/Collection';
+import { AppStateProvider } from './contexts/AppStateProvider';
 import Voting from './pages/Voting';
 import Admin from './pages/Admin';
 import Result from './pages/Result';
@@ -12,11 +13,13 @@ function App() {
   return (
     <Box p={isMobile ? 2 : 5}>
       <CollectionProvider>
-        <Routes>
-          <Route path='/' element={<Voting />} />
-          <Route path='admin' element={<Admin />} />
-          <Route path='result' element={<Result />} />
-        </Routes>
+        <AppStateProvider>
+          <Routes>
+            <Route path='/' element={<Voting />} />
+            <Route path='admin' element={<Admin />} />
+            <Route path='result' element={<Result />} />
+          </Routes>
+        </AppStateProvider>
       </CollectionProvider>
     </Box>
   );
