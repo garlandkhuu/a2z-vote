@@ -149,6 +149,18 @@ function Voting() {
               <Typography variant='h2' fontSize={20} fontWeight={600} mb={3}>
                 {question.question}
               </Typography>
+
+
+              {question.questionImages ? question.questionImages.map((image, index) =>
+                <Fragment key={`${image}-${index}`}>
+                 <div className="image-container">
+                  <h3 className="image-label">{image.label}</h3>
+                  <br/>
+                  <img src={image.src} alt="" className="example-image"/> 
+                </div>
+                </Fragment>) : <Fragment/>}
+
+
               {question.multipleSelection
                 ? question.answers.map((answer, index) => (
                     <div key={index}>

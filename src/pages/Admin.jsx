@@ -21,6 +21,7 @@ import { CollectionContext } from '../firebase/Collection';
 function Admin() {
   const [title, setTitle] = useState('');
   const [question, setQuestion] = useState('');
+  const [questionImages, setQuestionImages] = useState([]);
   const [answers, setAnswers] = useState([]);
   const [answerCount, setAnswerCount] = useState(2);
   const [custom, setCustom] = useState(false);
@@ -40,6 +41,7 @@ function Admin() {
       title,
       question,
       visible: false,
+      questionImages,
       answers,
       custom,
       multipleSelection,
@@ -51,6 +53,17 @@ function Admin() {
     } catch (error) {
       console.error(error);
     }
+  }
+
+  async function addQuestionImage() {
+    const newImage = {
+      label:'',
+      src:''
+    };
+
+    let images = [...questionImages];
+    images.push(newImage);
+    await setQuestionImages(images);
   }
 
   const makeVisible = async (title) => {
@@ -168,6 +181,46 @@ function Admin() {
               value={question}
               onChange={(e) => setQuestion(e.target.value)}
             />
+            <br />
+            <br />
+            
+            {questionImages.map((image, index) => (
+                <Fragment key={`image-${index}`} >
+                  <h6>Image{index} Label/title</h6>
+                  <input 
+                    type='text' 
+                    value={image.label} 
+                    
+                    onChange={(e) => {
+                      let updatedImages = [...questionImages];
+                      updatedImages[index].label = e.target.value;
+                      setQuestionImages(updatedImages)
+                    }}/>
+                  <br/>
+                  <br/>
+                  <h6>Image{index} src</h6>
+                  <input 
+                    type='text' 
+                    value={image.src} 
+                    
+                    onChange={(e) => {
+                      let updatedImages = [...questionImages];
+                      updatedImages[index].src = e.target.value;
+                      setQuestionImages(updatedImages)
+                    }}/>
+                </Fragment>
+                
+            ))}
+
+            <br />
+            <br />
+            <button
+                onClick={() => {
+                  addQuestionImage();
+                }}
+              >
+                Add a supporting Image?
+            </button>
             <br />
             <br />
             <span>Custom answers</span>

@@ -2,7 +2,7 @@
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
-
+  box-sizing: border-box;
   color-scheme: light dark;
   color: rgba(255, 255, 255, 0.87);
   background-color: #242424;
@@ -53,6 +53,25 @@ button:hover {
 button:focus,
 button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
+}
+
+/* quesiton images */
+.image-container {
+  width: 45%;
+  display: inline-block;
+  padding: 20px;
+}
+
+.image-container .example-image {
+  display: block;
+  width:100%;
+}
+
+@media (max-width: 500px) {
+  /* quesiton images */
+  .image-container {
+    width: 90%;
+  }
 }
 
 @media (prefers-color-scheme: light) {
