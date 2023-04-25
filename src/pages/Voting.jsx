@@ -177,7 +177,21 @@ function Voting() {
                     <div key={index}>
                       <button
                         disabled={disabled}
-                        onClick={() => incrementTotal(question, index)}
+                        onClick={() => {
+                          setSelectedAnswers({ [index]: true });
+                        }}
+                        style={
+                          // Radio button effect
+                          Object.keys(selectedAnswers).includes(
+                            String(index)
+                          ) ||
+                          (Object.keys(answersCurrent?.answers || {}).includes(
+                            String(index)
+                          ) &&
+                            disabled)
+                            ? { backgroundColor: '#1f79ad' }
+                            : {}
+                        }
                       >
                         {answer.text}
                       </button>

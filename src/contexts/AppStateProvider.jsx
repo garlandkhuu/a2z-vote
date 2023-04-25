@@ -48,16 +48,16 @@ export const AppStateProvider = ({ children }) => {
   const [hasSubmittedCurrent, setHasSubmittedCurrent] = useState();
 
   const { questions } = useContext(CollectionContext);
-  const activeQuestion = questions.find((question) => question.visible);
+  const activeQuestion = questions[0] ?? {};
   const answersCurrent = appState.submitted.find(
-    (question) => question.title === activeQuestion.title
+    (question) => question.title === activeQuestion?.title
   );
 
   // Toggle hasSubmittedCurrent depending if user submits or if question changes
   useEffect(() => {
     if (
       appState.submitted.some(
-        (question) => question.title === activeQuestion.title
+        (question) => question.title === activeQuestion?.title
       )
     ) {
       setHasSubmittedCurrent(true);
