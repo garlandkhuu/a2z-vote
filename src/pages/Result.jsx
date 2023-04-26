@@ -17,7 +17,7 @@ function Result() {
         : 800,
     height:
       isMobile && document?.body?.clientHeight
-        ? document?.body?.clientHeight - 126
+        ? document?.body?.clientHeight - 130
         : 800,
     titleSize: isMobile ? 18 : 20,
     labelSize: isMobile ? 14 : 16,

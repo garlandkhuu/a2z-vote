@@ -56,11 +56,17 @@ function ResultChart({
           '#8c3eb0',
         ],
         datalabels: {
-          align: 'start',
+          align: (context) => {
+            const index = context.dataIndex;
+            const value = context.dataset.data[index];
+            return value <= 0 ? 'end' : 'start'
+          },
           anchor: 'end',
           font: {
             size: 16,
+            weight: 'bold',
           },
+          color: 'white',
         },
       },
     ],
