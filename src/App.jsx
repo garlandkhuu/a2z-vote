@@ -16,8 +16,8 @@ function App() {
         <AppStateProvider>
           <Routes>
             <Route path='/' element={<Voting />} />
-            <Route path='admin' element={<Admin />} />
-            <Route path='result' element={<Result />} />
+            <Route path='/admin' element={<Admin />} />
+            <Route path='/result' element={<Result />} />
           </Routes>
         </AppStateProvider>
       </CollectionProvider>
