@@ -46,6 +46,10 @@ function Voting() {
     }
   }, [hasSubmittedCurrent]);
 
+  useEffect(() => {
+    setSelectedAnswers(answersCurrent?.answers || {});
+  }, [questions]);
+
   // EDIT FUNCTION
   async function incrementTotal(question, index) {
     const updateAnswers = { answers: question.answers };
