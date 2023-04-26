@@ -154,16 +154,19 @@ function Voting() {
                 {question.question}
               </Typography>
 
-
-              {question.questionImages ? question.questionImages.map((image, index) =>
-                <Fragment key={`${image}-${index}`}>
-                 <div className="image-container">
-                  <h3 className="image-label">{image.label}</h3>
-                  <br/>
-                  <img src={image.src} alt="" className="example-image"/> 
-                </div>
-                </Fragment>) : <Fragment/>}
-
+              {question.questionImages ? (
+                question.questionImages.map((image, index) => (
+                  <Fragment key={`${image}-${index}`}>
+                    <div className='image-container'>
+                      <h3 className='image-label'>{image.label}</h3>
+                      <br />
+                      <img src={image.src} alt='' className='example-image' />
+                    </div>
+                  </Fragment>
+                ))
+              ) : (
+                <Fragment />
+              )}
 
               {question.multipleSelection
                 ? question.answers.map((answer, index) => (
@@ -205,7 +208,7 @@ function Voting() {
                             String(index)
                           ) &&
                             disabled)
-                            ? { backgroundColor: '#1f79ad' }
+                            ? { backgroundColor: '#bfcaff' }
                             : {}
                         }
                       >
@@ -245,16 +248,23 @@ function Voting() {
               )}
               {hasSubmittedCurrent ? (
                 disabled ? (
-                  <button onClick={() => setDisabled(false)}>
+                  <button
+                    className='edit-button'
+                    onClick={() => setDisabled(false)}
+                  >
                     Edit Answer
                   </button>
                 ) : (
-                  <button onClick={() => handleResubmit(question)}>
+                  <button
+                    className='submit-button'
+                    onClick={() => handleResubmit(question)}
+                  >
                     Resubmit
                   </button>
                 )
               ) : (
                 <button
+                  className='submit-button'
                   onClick={() => {
                     handleSubmit(question);
                   }}
