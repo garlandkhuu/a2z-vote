@@ -158,7 +158,13 @@ function Voting() {
         {questions.map((question) =>
           question.visible ? (
             <div className='question' key={question.title}>
-              <Typography variant='h2' fontSize={24} fontWeight={600} mb={3} mt={1}>
+              <Typography
+                variant='h2'
+                fontSize={24}
+                fontWeight={600}
+                mb={3}
+                mt={1}
+              >
                 {question.question}
               </Typography>
 
@@ -229,6 +235,7 @@ function Voting() {
                   <input
                     type='text'
                     value={customAnswer}
+                    maxlength='30'
                     disabled={disabled}
                     onChange={(e) => {
                       setCustomAnswerError('');
