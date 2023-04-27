@@ -49,7 +49,7 @@ export const CollectionProvider = ({ children }) => {
   if (loading) {
     return (
       <div>
-        <h2>Initializing...</h2>
+        <h2>Sorry, Firebase is holding us back...</h2>
       </div>
     );
   }
