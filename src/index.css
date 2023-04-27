@@ -139,7 +139,11 @@ button:focus-visible {
     color: #747bff;
   }
   button {
-    background-color: #f9f9f9;
+    background-color: #e4e4e4;
+    transition: ease-in-out 0.15s;
+  }
+  button:hover {
+    background-color: #c7c7c7;
   }
 }
 
