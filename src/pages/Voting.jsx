@@ -146,11 +146,19 @@ function Voting() {
   return (
     <Fragment>
       <div className='viewQuestions'>
-        {questions.length == 0 ? <h1>Wait for the next question!</h1> : null}
+        {questions.length == 0 ? (
+          <div>
+            <h1 className='header'>April Town Hall Voting Portal</h1>
+            <div className='standby-subheader'>
+              Stand by for the next spicy question
+              <div className='loader' />
+            </div>
+          </div>
+        ) : null}
         {questions.map((question) =>
           question.visible ? (
             <div className='question' key={question.title}>
-              <Typography variant='h2' fontSize={20} fontWeight={600} mb={3}>
+              <Typography variant='h2' fontSize={24} fontWeight={600} mb={3} mt={1}>
                 {question.question}
               </Typography>
 
