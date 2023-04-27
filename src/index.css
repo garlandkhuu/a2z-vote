@@ -84,7 +84,10 @@ button:focus-visible {
 
 .image-container .example-image {
   display: block;
-  width:100%;
+  width: 100%;
+  height: auto;
+  max-width: 600px;
+  max-height: 450px;
 }
 
 .header {
@@ -114,13 +117,21 @@ button:focus-visible {
 
 /* Safari */
 @-webkit-keyframes spin {
-  0% { -webkit-transform: rotate(0deg); }
-  100% { -webkit-transform: rotate(360deg); }
+  0% {
+    -webkit-transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(360deg);
+  }
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 @media (max-width: 500px) {
@@ -148,13 +159,16 @@ button:focus-visible {
 }
 
 @media (prefers-color-scheme: dark) {
-  .MuiAutocomplete-root .MuiAutocomplete-input, .MuiFormControl-root label, .MuiFormControl-root input, .MuiFormControl-root fieldset {
+  .MuiAutocomplete-root .MuiAutocomplete-input,
+  .MuiFormControl-root label,
+  .MuiFormControl-root input,
+  .MuiFormControl-root fieldset {
     color: #fff;
-    border-color:#fff;
+    border-color: #fff;
   }
 
   .MuiButton-root.MuiButton-text.login-btn {
     background-color: rgba(255, 255, 255, 0.3);
-    color:#000
+    color: #000;
   }
 }
